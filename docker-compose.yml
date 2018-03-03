@@ -1,0 +1,132 @@
+version: '2'
+services:
+    # Init: docker-compose run --rm -e ENV_CEPH_SRV=xxx_init xxx
+    # Run:  docker-compose up -d xxx
+    # Start:docker-compose start xxx
+    ceph:
+        image: taichikageyama/ceph
+        build: .
+    mon:
+        image: taichikageyama/ceph
+        environment:
+            - ENV_CEPH_SRV=mon_run
+            - ENV_PUBLIC_NW=${PUB_NW}
+            - TZ=${TIME_ZONE}
+        tmpfs:
+            - /run
+        volumes:
+            - ${ETC_CEPH}:/etc/ceph
+            - ${CEPH_MON}:/var/lib/ceph/mon
+            - ${SCRIPTS}:/scripts
+        logging:
+                driver: "journald"
+        network_mode: "host"
+        restart: "always"
+        entrypoint: ${ENTRY_POINT}
+    mgr:
+        image: taichikageyama/ceph
+        environment:
+            - ENV_CEPH_SRV=mgr_run
+            - ENV_PUBLIC_NW=${PUB_NW}
+            - TZ=${TIME_ZONE}
+        tmpfs:
+            - /run
+        volumes:
+            - ${ETC_CEPH}:/etc/ceph
+            - ${SCRIPTS}:/scripts
+        logging:
+                driver: "journald"
+        network_mode: "host"
+        restart: "always"
+        depends_on:
+            - mon
+        entrypoint: ${ENTRY_POINT}
+    osd0:
+        image: taichikageyama/ceph
+        environment:
+            - ENV_CEPH_SRV=osd_run
+            - ENV_PUBLIC_NW=${PUB_NW}
+            - ENV_CLUSTER_NW=${CLUSTER_NW}
+            - ENV_OSD_DISK=/dev/sda
+            - ENV_JOURNAL_PATH=/ceph/osd.0.journal
+            - ENV_OSD_ID=0
+            - ENV_OSD_ROOT=${OSD_ROOT}
+            - ENV_OSD_CLASS=${DISK0_CLASS}
+            - ENV_OSD_SIZE_RATIO=${DISK0_SIZE_RATIO}
+            - TZ=${TIME_ZONE}
+        tmpfs:
+            - /ceph
+            - /run
+        volumes:
+            - ${ETC_CEPH}:/etc/ceph
+            - ${SCRIPTS}:/scripts
+        cap_add:
+            - SYS_ADMIN
+        devices:
+            - ${DISK0}:/dev/sda
+        # pid should be shared among OSDs on this host
+        pid: "host"
+        logging:
+            driver: "journald"
+        network_mode: "host"
+        restart: "always"
+        depends_on:
+            - mon
+        entrypoint: ${ENTRY_POINT}
+    osd1:
+        image: taichikageyama/ceph
+        environment:
+            - ENV_CEPH_SRV=osd_run
+            - ENV_PUBLIC_NW=${PUB_NW}
+            - ENV_CLUSTER_NW=${CLUSTER_NW}
+            - ENV_OSD_DISK=/dev/sda
+            - ENV_JOURNAL_PATH=/ceph/osd.1.journal
+            - ENV_OSD_ID=1
+            - ENV_OSD_ROOT=${OSD_ROOT}
+            - ENV_OSD_CLASS=${DISK1_CLASS}
+            - ENV_OSD_SIZE_RATIO=${DISK1_SIZE_RATIO}
+            - TZ=${TIME_ZONE}
+        tmpfs:
+            - /ceph
+            - /run
+        volumes:
+            - ${ETC_CEPH}:/etc/ceph
+            - ${SCRIPTS}:/scripts
+        cap_add:
+            - SYS_ADMIN
+        devices:
+            - ${DISK1}:/dev/sda
+        pid: "host"
+        logging:
+            driver: "journald"
+        network_mode: "host"
+        restart: "always"
+        depends_on:
+            - mon
+        entrypoint: ${ENTRY_POINT}
+    rgw:
+        image: taichikageyama/ceph
+        environment:
+            - ENV_CEPH_SRV=rgw_run
+            - ENV_PUBLIC_NW=${PUB_NW}
+            - ENV_RGW_DNS_NAME=${RGW_DNS_NAME}
+            - ENV_RGW_PORT=${RGW_PORT}
+            - ENV_RGW_ZONE_GROUP=${RGW_ZONE_GROUP}
+            - ENV_RGW_ZONE=${RGW_ZONE}
+            - ENV_RGW_ZONE_ADMIN=${RGW_ZONE_ADMIN}
+            - ENV_RGW_REALM=${RGW_REALM}
+            - ENV_RGW_ENDPOINT=${RGW_ENDPOINT}
+            - TZ=${TIME_ZONE}
+        tmpfs:
+            - /run
+        volumes:
+            - ${ETC_CEPH}:/etc/ceph
+            - ${SCRIPTS}:/scripts
+        logging:
+                driver: "journald"
+        network_mode: "host"
+        restart: "always"
+        depends_on:
+            - mon
+        entrypoint: ${ENTRY_POINT}
+
