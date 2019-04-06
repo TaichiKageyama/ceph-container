@@ -26,7 +26,7 @@ CEPH_CMD="docker-compose exec mon ceph"
 #$CEPH_CMD osd crush set osd.1 $DISK1_SIZE_RATIO root=home host=`hostname -s`
 $CEPH_CMD osd crush rule rm replicated_rule
 $CEPH_CMD osd crush rm default
-$CEPH_CMD osd crush rule create-replicated replicated_rule $OSD_ROOT host $DISK0_CLASS
+$CEPH_CMD osd crush rule create-replicated replicated_rule $OSD_ROOT host
 $CEPH_CMD osd crush rule create-replicated rgw_bucket-data_rule $OSD_ROOT host
 $CEPH_CMD osd crush rule create-replicated rbd_rule $OSD_ROOT host $DISK0_CLASS
 $CEPH_CMD osd pool create rbd 32 32 replicated rbd_rule
