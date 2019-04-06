@@ -29,15 +29,6 @@ osd_setup_env()
 	OSD_JOURNAL_DISK=`echo $ENV_OSD_JOURNAL_DISK | $pick_disk`
 	OSD_JOURNAL_DISK_PART=`echo $ENV_OSD_JOURNAL_DISK | $pick_part`
 	test $OSD_JOURNAL_DISK_PART || OSD_JOURNAL_DISK_PART=0
-
-	if [ $ENV_JOURNAL_SIZE ]; then
-		tmp="osd_journal_size = $ENV_JOURNAL_SIZE"
-		sed -i "s/^osd_journal_size.*/$tmp/g" $CFG
-	fi
-	if [ $ENV_SYNC_INTERVAL ]; then
-		tmp="filestore_max_sync_interval = $ENV_SYNC_INTERVAL"
-		sed -i "s/^filestore_max_sync_interval.*/$tmp/g" $CFG
-	fi
 }
 
 osd_make_gpt_table()
@@ -98,14 +89,19 @@ osd_init()
 			osd_journal_disk_init
 		fi
 	fi
+
 	ceph-osd -i $ENV_OSD_ID --cluster $ENV_CLUSTER_NAME \
-		--mkfs --mkkey --mkjournal --osd-uuid $ENV_FSID 
+		--mkfs --mkkey --mkjournal --osd-uuid $ENV_FSID
+	# Twice
+	ceph-osd -i $ENV_OSD_ID --cluster $ENV_CLUSTER_NAME \
+                --mkfs --mkkey --mkjournal --osd-uuid $ENV_FSID &&
 	ceph auth add osd.${ENV_OSD_ID} \
 		mon 'allow profile osd' osd 'allow *' \
-		-i $OSD_DIR/keyring
-	chown -R $ENV_CEPH_USER:$ENV_CEPH_GROUP $OSD_DIR
-	umount $OSD_DIR
+		-i $OSD_DIR/keyring && \
+	chown -R $ENV_CEPH_USER:$ENV_CEPH_GROUP $OSD_DIR && \
 	echo "Ready to start new OSD [ENV_OSD_ID=$ENV_OSD_ID]"
+
+	umount $OSD_DIR
 }
 
 osd_map_init()
