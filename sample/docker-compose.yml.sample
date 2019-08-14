@@ -1,0 +1,96 @@
+version: '2'
+services:
+   # Init: docker-compose run --rm -e ENV_CEPH_SRV=xxx_init xxx
+   # Run:  docker-compose up -d xxx
+   # Start:docker-compose start xxx
+    mon:
+        build: .
+        image: taichikageyama/ceph
+        environment:
+            - ENV_CEPH_SRV=mon_run
+            - ENV_PUBLIC_NW=${PUB_NW}
+            - TZ=${TIME_ZONE}
+        tmpfs:
+            - /run
+        volumes:
+            - ${ETC_CEPH}:/etc/ceph
+            - ${CEPH_MON}:/var/lib/ceph/mon
+            - ${SCRIPTS}:/scripts
+        logging:
+                driver: "journald"
+        network_mode: "host"
+        restart: "always"
+        entrypoint: ${ENTRY_POINT}
+    mgr:
+        image: taichikageyama/ceph:x86_64
+        container_name: mgr
+        environment:
+          - ENV_CEPH_SRV=mgr_run
+          - ENV_PUBLIC_NW=${PUB_NW}
+        tmpfs:
+          - /run
+        volumes:
+          - /etc/localtime:/etc/localtime:ro
+          - ${ETC_CEPH}:/etc/ceph
+          - ${SCRIPTS}:/scripts:z
+        logging:
+          driver: "journald"
+        network_mode: "host"
+        restart: "always"
+        entrypoint: ${ENTRY_POINT}
+
+    rgw:
+        image: taichikageyama/ceph:x86_64
+        container_name: rgw
+        environment:
+          - ENV_CEPH_SRV=rgw_run
+          - ENV_PUBLIC_NW=${PUB_NW}
+          - ENV_RGW_DNS_NAME=${RGW_DNS_NAME}
+          - ENV_RGW_PORT=${RGW_PORT}
+          - ENV_RGW_ZONE_GROUP=${RGW_ZONE_GROUP}
+          - ENV_RGW_ZONE=${RGW_ZONE}
+          - ENV_RGW_ZONE_ADMIN=${RGW_ZONE_ADMIN}
+          - ENV_RGW_REALM=${RGW_REALM}
+          - ENV_RGW_ENDPOINT=${RGW_ENDPOINT}
+        tmpfs:
+          - /run
+        volumes:
+          - /etc/localtime:/etc/localtime:ro
+          - ${ETC_CEPH}:/etc/ceph
+          - ${SCRIPTS}:/scripts
+        logging:
+          driver: "journald"
+        network_mode: "host"
+        restart: "always"
+        entrypoint: ${ENTRY_POINT}
+
+    osdXXX:
+        image: taichikageyama/ceph:x86_64
+        container_name: osdXXX
+        environment:
+          - ENV_CEPH_SRV=osd_run
+          - ENV_BLUESTORE=true
+          - ENV_OSD_ID=XXX
+          - ENV_OSD_ROOT=${DISKXXX_ROOT}
+          - ENV_OSD_CLASS=${DISKXXX_CLASS}
+          - ENV_OSD_SIZE_RATIO=${DISKXXX_SIZE_RATIO}
+          - ENV_OSD_MEM=${DISKXXX_MEM}
+          - ENV_DB_SIZE=${DISKXXX_DB_SIZE}
+          - ENV_VG_LVOL=${DISKXXX}
+        network_mode: "host"
+        ipc: "host"
+        pid: "host"
+        tmpfs:
+          - /run
+        volumes:
+          - /dev:/dev
+          - /etc/localtime:/etc/localtime:ro
+          - ${ETC_CEPH}:/etc/ceph:z
+          - ${SCRIPTS}:/scripts:z
+          - ./PV/var/lib/ceph:/var/lib/ceph:z
+          - /run/lvm/lvmetad.socket:/run/lvm/lvmetad.socket:z
+          - /var/run/ceph:/var/run/ceph:z
+          - /var/run/udev/:/var/run/udev/:z
+        privileged: true
+        entrypoint: ${ENTRY_POINT}
+
