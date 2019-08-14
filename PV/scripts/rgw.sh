@@ -68,7 +68,7 @@ rgw_run()
 	# For mon, Must provide the read cap, but write one is optional
 	# Write cap make rgw create pools automatically.
 	ceph auth get-or-create client.rgw.${RGW_HOSTNAME} \
-		mon 'allow rw' osd 'allow rwx' \
+		mon 'allow r' osd 'allow rwx' \
 		-o $RGW_DIR/keyring
 	chown $ENV_CEPH_USER:$ENV_CEPH_GROUP $RGW_DIR/keyring
 	TCMALLOC_MAX_TOTAL_THREAD_CACHE_BYTES=$ENV_TCMALLOC_CACHE_BYTES \
