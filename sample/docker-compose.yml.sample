@@ -22,7 +22,7 @@ services:
         restart: "always"
         entrypoint: ${ENTRY_POINT}
     mgr:
-        image: taichikageyama/ceph:x86_64
+        image: taichikageyama/ceph
         container_name: mgr
         environment:
           - ENV_CEPH_SRV=mgr_run
@@ -40,7 +40,7 @@ services:
         entrypoint: ${ENTRY_POINT}
 
     rgw:
-        image: taichikageyama/ceph:x86_64
+        image: taichikageyama/ceph
         container_name: rgw
         environment:
           - ENV_CEPH_SRV=rgw_run
@@ -65,7 +65,7 @@ services:
         entrypoint: ${ENTRY_POINT}
 
     osdXXX:
-        image: taichikageyama/ceph:x86_64
+        image: taichikageyama/ceph
         container_name: osdXXX
         environment:
           - ENV_CEPH_SRV=osd_run
