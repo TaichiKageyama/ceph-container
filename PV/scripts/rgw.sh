@@ -71,7 +71,6 @@ rgw_run()
 		mon 'allow r' osd 'allow rwx' \
 		-o $RGW_DIR/keyring
 	chown $ENV_CEPH_USER:$ENV_CEPH_GROUP $RGW_DIR/keyring
-	TCMALLOC_MAX_TOTAL_THREAD_CACHE_BYTES=$ENV_TCMALLOC_CACHE_BYTES \
 	radosgw -f --cluster $ENV_CLUSTER_NAME --name $RGW_NAME \
 		--setuser $ENV_CEPH_USER --setgroup $ENV_CEPH_GROUP
 }

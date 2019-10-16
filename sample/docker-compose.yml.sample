@@ -4,15 +4,15 @@ services:
    # Run:  docker-compose up -d xxx
    # Start:docker-compose start xxx
     mon:
-        build: .
         image: taichikageyama/ceph
+        container_name: mon
         environment:
             - ENV_CEPH_SRV=mon_run
             - ENV_PUBLIC_NW=${PUB_NW}
-            - TZ=${TIME_ZONE}
         tmpfs:
             - /run
         volumes:
+            - /etc/localtime:/etc/localtime:ro
             - ${ETC_CEPH}:/etc/ceph
             - ${CEPH_MON}:/var/lib/ceph/mon
             - ${SCRIPTS}:/scripts
@@ -76,6 +76,7 @@ services:
           - ENV_OSD_SIZE_RATIO=${DISKXXX_SIZE_RATIO}
           - ENV_OSD_MEM=${DISKXXX_MEM}
           - ENV_DB_SIZE=${DISKXXX_DB_SIZE}
+          - ENV_CACHE_SIZE=${DISKXXX_CACHE_SIZE}
           - ENV_VG_LVOL=${DISKXXX}
         network_mode: "host"
         ipc: "host"

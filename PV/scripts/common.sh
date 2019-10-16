@@ -19,9 +19,6 @@ setup_env()
 		ENV_FSID=`grep fsid $CFG | cut -d ' ' -f 3`
 	fi
 	
-	# Up to 128MB (default)
-        test $ENV_TCMALLOC_CACHE_BYTES || ENV_TCMALLOC_CACHE_BYTES=134217728
-	
 	test $ENV_CEPH_USER || ENV_CEPH_USER=ceph
 	test $ENV_CEPH_GROUP || ENV_CEPH_GROUP=ceph
 }

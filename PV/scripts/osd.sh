@@ -117,6 +117,7 @@ cat <<EOF >> $CFG
 osd_memory_target = $ENV_OSD_MEM
 bluestore_block_db_size = $ENV_DB_SIZE
 bluestore_block_wal_size = 0
+bluestore_cache_size = $ENV_CACHE_SIZE
 EOF
 
 	ceph-volume lvm zap $ENV_VG_LVOL
@@ -197,7 +198,6 @@ osd_run()
 
 	osd_run_prep
 
-	TCMALLOC_MAX_TOTAL_THREAD_CACHE_BYTES=$ENV_TCMALLOC_CACHE_BYTES \
 	ceph-osd -f --cluster $ENV_CLUSTER_NAME --id $ENV_OSD_ID \
 		--setuser $ENV_CEPH_USER --setgroup $ENV_CEPH_GROUP
 }

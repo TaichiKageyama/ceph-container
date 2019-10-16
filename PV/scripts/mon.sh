@@ -111,7 +111,6 @@ mon_run()
         #Don't save coredump
         ulimit -c 0
 	
-	TCMALLOC_MAX_TOTAL_THREAD_CACHE_BYTES=$ENV_TCMALLOC_CACHE_BYTES \
 	ceph-mon -f --cluster ${ENV_CLUSTER_NAME} --id $MON_HOSTNAME \
 		--setuser $ENV_CEPH_USER --setgroup $ENV_CEPH_GROUP
 }
