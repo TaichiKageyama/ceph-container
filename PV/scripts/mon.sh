@@ -111,7 +111,7 @@ mon_run()
         #Don't save coredump
         ulimit -c 0
 	
-	ceph-mon -f --cluster ${ENV_CLUSTER_NAME} --id $MON_HOSTNAME \
+	exec ceph-mon -f --cluster ${ENV_CLUSTER_NAME} --id $MON_HOSTNAME \
 		--setuser $ENV_CEPH_USER --setgroup $ENV_CEPH_GROUP
 }
 

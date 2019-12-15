@@ -198,6 +198,6 @@ osd_run()
 
 	osd_run_prep
 
-	ceph-osd -f --cluster $ENV_CLUSTER_NAME --id $ENV_OSD_ID \
+	exec ceph-osd -f --cluster $ENV_CLUSTER_NAME --id $ENV_OSD_ID \
 		--setuser $ENV_CEPH_USER --setgroup $ENV_CEPH_GROUP
 }

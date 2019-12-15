@@ -20,7 +20,7 @@ services:
                 driver: "journald"
         network_mode: "host"
         restart: "always"
-        entrypoint: ${ENTRY_POINT}
+        command: ['/scripts/entrypoint.sh']
     mgr:
         image: taichikageyama/ceph
         container_name: mgr
@@ -37,8 +37,7 @@ services:
           driver: "journald"
         network_mode: "host"
         restart: "always"
-        entrypoint: ${ENTRY_POINT}
-
+        command: ['/scripts/entrypoint.sh']
     rgw:
         image: taichikageyama/ceph
         container_name: rgw
@@ -62,8 +61,7 @@ services:
           driver: "journald"
         network_mode: "host"
         restart: "always"
-        entrypoint: ${ENTRY_POINT}
-
+        command: ['/scripts/entrypoint.sh']
     osdXXX:
         image: taichikageyama/ceph
         container_name: osdXXX
@@ -88,10 +86,10 @@ services:
           - /etc/localtime:/etc/localtime:ro
           - ${ETC_CEPH}:/etc/ceph:z
           - ${SCRIPTS}:/scripts:z
-          - ./PV/var/lib/ceph:/var/lib/ceph:z
+          - ${CEPH_LIB}:/var/lib/ceph:z
           - /run/lvm/lvmetad.socket:/run/lvm/lvmetad.socket:z
           - /var/run/ceph:/var/run/ceph:z
           - /var/run/udev/:/var/run/udev/:z
         privileged: true
-        entrypoint: ${ENTRY_POINT}
+        entrypoint: command: ['/scripts/entrypoint.sh']
 

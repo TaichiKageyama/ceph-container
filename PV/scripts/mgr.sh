@@ -17,6 +17,6 @@ mgr_run()
 		-o $MGR_DIR/keyring
 	chown $ENV_CEPH_USER:$ENV_CEPH_GROUP $MGR_DIR/keyring
 	TCMALLOC_MAX_TOTAL_THREAD_CACHE_BYTES=$ENV_TCMALLOC_CACHE_BYTES \
-	ceph-mgr -f --cluster $ENV_CLUSTER_NAME -i $MGR_HOSTNAME \
+	exec ceph-mgr -f --cluster $ENV_CLUSTER_NAME -i $MGR_HOSTNAME \
 		--setuser $ENV_CEPH_USER --setgroup $ENV_CEPH_GROUP
 }

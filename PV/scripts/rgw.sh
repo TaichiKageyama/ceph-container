@@ -71,6 +71,6 @@ rgw_run()
 		mon 'allow r' osd 'allow rwx' \
 		-o $RGW_DIR/keyring
 	chown $ENV_CEPH_USER:$ENV_CEPH_GROUP $RGW_DIR/keyring
-	radosgw -f --cluster $ENV_CLUSTER_NAME --name $RGW_NAME \
+	exec radosgw -f --cluster $ENV_CLUSTER_NAME --name $RGW_NAME \
 		--setuser $ENV_CEPH_USER --setgroup $ENV_CEPH_GROUP
 }
