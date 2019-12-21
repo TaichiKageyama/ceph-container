@@ -19,7 +19,7 @@ services:
         logging:
                 driver: "journald"
         network_mode: "host"
-        restart: "always"
+        restart: on-failure:3
         command: ['/scripts/entrypoint.sh']
     mgr:
         image: taichikageyama/ceph
@@ -36,7 +36,7 @@ services:
         logging:
           driver: "journald"
         network_mode: "host"
-        restart: "always"
+        restart: on-failure:3
         command: ['/scripts/entrypoint.sh']
     rgw:
         image: taichikageyama/ceph
@@ -60,7 +60,7 @@ services:
         logging:
           driver: "journald"
         network_mode: "host"
-        restart: "always"
+        restart: on-failure:3
         command: ['/scripts/entrypoint.sh']
     osdXXX:
         image: taichikageyama/ceph
@@ -91,5 +91,6 @@ services:
           - /var/run/ceph:/var/run/ceph:z
           - /var/run/udev/:/var/run/udev/:z
         privileged: true
+        restart: on-failure:3
         entrypoint: command: ['/scripts/entrypoint.sh']
 
